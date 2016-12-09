@@ -2,27 +2,35 @@ Base idea for a user database
 -------------------------------
 Uses live database.
 
-from a command prompt type
+
+Two ways to start website:
+1.
+use "start mongo.bat" and then use "start servers.bat"
+2.
+Open 3 command prompt windows
+
+from the first command prompt type
 mongod
 
-from a second command prompt in folder makingApi type
-node server.js
+from the second command prompt in folder makingApi type
+npm start
 
-from a third command prompt in folder makingClient type
-node server.js
+from the third command prompt in folder makingClient type
+npm start
 
-in browser go to
 
+Website is on
 localhost:9000
 
+Api is on 
+localhost:3000
 
 
 to look at database from server point of view
 //open up a cmd prompt and type
-//if using start mongo.bat then open the mongo cmd
 mongo
 
-use userdata
+use users
 show collections
 //to see all users
 db.users.find()
