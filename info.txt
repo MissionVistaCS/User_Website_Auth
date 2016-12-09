@@ -30,7 +30,7 @@ to look at database from server point of view
 //open up a cmd prompt and type
 mongo
 
-use users
+use userdata
 show collections
 //to see all users
 db.users.find()
