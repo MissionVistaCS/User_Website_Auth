@@ -1,0 +1,30 @@
+Base idea for a user database
+-------------------------------
+Uses live database.
+
+from a command prompt type
+mongod
+
+from a second command prompt in folder makingApi type
+node server.js
+
+from a third command prompt in folder makingClient type
+node server.js
+
+in browser go to
+
+localhost:9000
+
+
+
+to look at database from server point of view
+//open up a cmd prompt and type
+//if using start mongo.bat then open the mongo cmd
+mongo
+
+use userdata
+show collections
+//to see all users
+db.users.find()
+//to delete all users
+db.users.drop()
