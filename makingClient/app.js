@@ -3,15 +3,12 @@ var request = new Request();
 ///////////////////////////
 $( document ).ready(function() {
 	//Check if cookies show logged in
-	if(getCookie("logged")!="" && getCookie("logged")=="true")
-	{
+	if(getCookie("username")!="" && getCookie("sessId")!="") {
+		//call Authentication method
+		$("#auth").trigger('click');
 		console.log("Logged in as " + getCookie("username"));
 		//Show that the user is logged in
 		$("#confirmation").html("Logged in as " + getCookie("username"));
-		//call Authentication method
-		$("#auth").trigger('click');
-
-		
 	}
 });
 //Authentication button
@@ -19,8 +16,7 @@ $("#auth").click(function() {
 	var username = getCookie("username");
 	var sessId = getCookie("sessId");
 	//if either one is empty then Authentication will fail no matter what
-	if(username == "" || sessId == "")
-	{
+	if(username == "" || sessId == "") {
 		console.log("Authentication Denied");
 		return;
 	}
@@ -33,19 +29,18 @@ $("#auth").click(function() {
 		if (err) {
 			console.log(err);
 		}
-		else if(user.errormsg != undefined)
-		{
+		else if(user.errormsg != undefined) {
 			console.log(user.errormsg);
-			killCookies();
 		}
 		else if(user) {
 			console.log("Authentication Successful");
+			return;
 		}
 		else {
 			//Because Authentication was unsuccessful logout of account
 			console.log("Authentication Denied");
-			killCookies();
 		}
+		killCookies();
 	});
 });
 //Display cookies
@@ -58,10 +53,9 @@ $("#up").click(function() {
 	//prevent PHP from being called
 	event.preventDefault();
 
-	//If password textbox is empty then don't attemp to log in
-	if($("#Pass").val() == "")
-	{
-		console.log("Please enter password");
+	//If either textbox is empty then don't attemp to signup
+	if($("#Pass").val() == "" || $("#User").val() == "") {
+		console.log("Please enter username and password");
 		return;
 	}
 
@@ -74,20 +68,34 @@ $("#up").click(function() {
 		method: "POST",
 		url: "http://localhost:3000/api/users",
 		data: parameters
-	},function(error,user){
-		if (error){
+	},function(error,user) {
+		if (error) {
 			console.log(error);
 		}
-		else if(user != undefined) {
+		else if(user == undefined) {
+			console.log("something went wrong");
+		}
+		else if(user.errmsg!=undefined) {
+			console.log(user);
+		}
+		else {
 			//Call SignIn after Signing up had no errors
 			$("#in").trigger('click');
+			return;
 		}
+		killCookies();
 	});
 });
 
 /////////////////////////
 //Sign in
 $("#in").click(function() {
+	//If either textbox is empty then don't attemp to log in
+	if($("#Pass").val() == "" || $("#User").val() == "") {
+		console.log("Please enter username and password");
+		return;
+	}
+
 	var parameters = {
 		username: $("#User").val(),
 		password: $("#Pass").val()
@@ -101,26 +109,22 @@ $("#in").click(function() {
 	}, function(err, user) {
 		if (err) {
 			console.log(err);
-			killCookies();
 		}
-		//Send error to console and delete cookies
-		else if(user.errormsg != undefined)
-		{
-			console.log(user.errormsg);
-			killCookies();
+		else if(user == undefined) {
+			console.log("something went wrong");
+		}
+		else if(user.errmsg!=undefined) {
+			console.log(user);
 		}
 		//Create cookies for user session
-		else if(user != undefined) {
+		else {
 			setCookie("username", user.username, 0);
-			setCookie("logged", true, 0);
 			setCookie("sessId", user.sessId, 0)
 			console.log(document.cookie);
 			$("#confirmation").html("Logged in as " + getCookie("username"));
+			return;
 		}
-		//Delete Cookies for user session if something else  goes wrong
-		else {
-			killCookies();
-		}
+		killCookies();
 	});
 });
 
@@ -140,6 +144,7 @@ function setCookie(cname, cvalue, exminutes) {
 
 function getCookie(cname) {
     var name = cname + "=";
+    //Turn cookies into an array
     var ca = document.cookie.split(';');
     for(var i = 0; i <ca.length; i++) {
         var c = ca[i];
@@ -159,7 +164,6 @@ function deleteCookie(cname) {
 
 function killCookies() {
 	deleteCookie("username");
-	deleteCookie("logged");
 	deleteCookie("sessId");
 	$("#confirmation").html(" Please Sign in or Sign up ");
 }

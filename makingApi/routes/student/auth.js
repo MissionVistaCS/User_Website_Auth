@@ -9,12 +9,11 @@ module.exports = function(router) {
 		User.findOne({username:request.params.username},function(error,user) {
 			console.log('in 3 auth.js');
 			if (error) {
-				console.log(error);
 				return response.send(error);
 			}
 			else if (user == undefined) {
 				var err = {
-					'errormsg' : "no user of that name" + request.params.username
+					'errmsg' : "no user of that name" + request.params.username
 				};
 				return response.send(err);
 			}

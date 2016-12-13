@@ -12,13 +12,12 @@ module.exports = function(router) {
 			console.log('in 3 signin.js');
 			//sends back error if error
 			if (error) {
-				console.log(error);
 				return response.send(error);
 			}
 			//makes sure user isn't empty
 			else if (user == undefined) {
 				var err = {
-					'errormsg' : "no user of that name " + request.params.username
+					'errmsg' : "no user of that name " + request.params.username
 				};
 				return response.send(err);
 			}
